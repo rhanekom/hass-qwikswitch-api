@@ -11,7 +11,7 @@ repos:
         args:
           - --safe
           - --quiet
-        files: ^((custom_components|scripts|tests)/.+)?[^/]+\.py$
+        language_version: python3.11
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
