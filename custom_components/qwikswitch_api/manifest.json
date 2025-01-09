@@ -1,6 +1,6 @@
 {
   "domain": "qwikswitch_api",
-  "name": "Qwikswitch API",
+  "name": "QwikSwitch API",
   "codeowners": [
     "@rhanekom"
   ],
