@@ -1,0 +1,12 @@
+{
+  "domain": "qwikswitch_api",
+  "name": "Qwikswitch API",
+  "codeowners": [
+    "@rhanekom"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/rhanekom/hass-qwikswitch-api",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/rhanekom/hass-qwikswitch-api",
+  "version": "0.1.0"
+}
