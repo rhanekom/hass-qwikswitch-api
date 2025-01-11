@@ -2,6 +2,8 @@
 
 set -e
 
-cd "$(dirname "$0")/.."
+sudo apt-get update && sudo apt-get dist-upgrade -y
 
+cd "$(dirname "$0")/.."
 python3 -m pip install --requirement requirements.txt
+pre-commit install
