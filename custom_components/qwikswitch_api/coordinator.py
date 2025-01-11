@@ -1,4 +1,4 @@
-"""DataUpdateCoordinator for integration_blueprint."""
+"""DataUpdateCoordinator for qwikswitch_api."""
 
 from __future__ import annotations
 

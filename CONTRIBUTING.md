@@ -44,7 +44,7 @@ People *love* thorough bug reports. I'm not even kidding.
 
 ## Use a Consistent Coding Style
 
-Use [black](https://github.com/ambv/black) to make sure the code follows the style.
+Use [black](https://github.com/ambv/black) to make sure the code follows the style.  A precommit hook is installed with the development environment to help ensure consistency in commits.
 
 ## Test your code modification
 
@@ -55,6 +55,10 @@ if you use Visual Studio Code. With this container you will have a stand alone
 Home Assistant instance running and already configured with the included
 [`configuration.yaml`](./config/configuration.yaml)
 file.
+
+* `/scripts/develop` will start an instance of Home Assistant for testing purposes.
+* Running `/scripts/clean` will remove all Home Assistant create files if you'd like to start afresh.
+
 
 ## License
 
