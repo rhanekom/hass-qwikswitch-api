@@ -1,4 +1,4 @@
-"""Custom types for integration_blueprint."""
+"""Custom types for qwikswitch_api."""
 
 from __future__ import annotations
 
@@ -9,17 +9,17 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.loader import Integration
 
-    from .api import IntegrationBlueprintApiClient
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .api import QSApiClient
+    from .coordinator import QSDataUpdateCoordinator
 
 
-type IntegrationBlueprintConfigEntry = ConfigEntry[IntegrationBlueprintData]
+type QSConfigEntry = ConfigEntry[QSData]
 
 
 @dataclass
-class IntegrationBlueprintData:
-    """Data for the Blueprint integration."""
+class QSData:
+    """Data for the QwikSwitch integration."""
 
-    client: IntegrationBlueprintApiClient
-    coordinator: BlueprintDataUpdateCoordinator
+    client: QSApiClient
+    coordinator: QSDataUpdateCoordinator
     integration: Integration
