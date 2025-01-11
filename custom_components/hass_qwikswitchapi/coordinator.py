@@ -22,7 +22,7 @@ class QSDataUpdateCoordinator(DataUpdateCoordinator):
 
     config_entry: QSConfigEntry
 
-    async def _async_update_data(self) -> Any:
+    async def _update_data(self) -> Any:
         """Update data via library."""
         try:
             return await self.config_entry.runtime_data.client.async_get_data()

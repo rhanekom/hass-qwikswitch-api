@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.loader import Integration
+    from qwikswitchapi.qsapi import QSApi
 
-    from .api import QSApiClient
     from .coordinator import QSDataUpdateCoordinator
 
 
@@ -20,6 +20,6 @@ type QSConfigEntry = ConfigEntry[QSData]
 class QSData:
     """Data for the QwikSwitch integration."""
 
-    client: QSApiClient
+    client: QSApi
     coordinator: QSDataUpdateCoordinator
     integration: Integration
