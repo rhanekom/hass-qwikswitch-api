@@ -9,7 +9,12 @@ The [QwikSwitch QSUSB integration included in Home Assistant core](https://www.h
 
 ## Installation
 
-TODO
+Install via HACS.
+
+On setting up the integration you will need two pieces of information:
+
+* The email address you used to register on the [QwikSwitch website](https://qwikswitch.com/login/)
+* The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password.
 
 ## Contributing
 
