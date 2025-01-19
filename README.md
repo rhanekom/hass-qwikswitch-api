@@ -16,6 +16,8 @@ On setting up the integration you will need two pieces of information:
 * The email address you used to register on the [QwikSwitch website](https://qwikswitch.com/login/)
 * The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password.
 
+The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 3s, but can be changed in this configuration.
+
 ## Contributing
 
 See [Contributing](CONTRIBUTING.md) for details.

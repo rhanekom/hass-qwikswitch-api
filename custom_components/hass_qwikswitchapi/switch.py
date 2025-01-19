@@ -95,6 +95,10 @@ class QwikSwitchRelay(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], Switch
         self._attr_name = name
         self._attr_unique_id = f"qwikswitch_switch_{device_id}"
 
+        # Store an "optimistic" level (0..100) after toggling.
+        # If None, we rely on the polled data from coordinator.data.
+        self._optimistic_level: int | None = None
+
     @property
     def is_on(self) -> bool:
         """
@@ -102,6 +106,9 @@ class QwikSwitchRelay(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], Switch
 
         :return: True if value > 0, else False
         """
+        if self._optimistic_level is not None:
+            return self._optimistic_level > 0
+
         dev_status = self._find_status()
         return dev_status.value > 0 if dev_status else False
 
@@ -109,14 +116,22 @@ class QwikSwitchRelay(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], Switch
         """Turn the relay on (value=100)."""
         try:
             self._qs_client.control_device(self._device_id, 100)
+            # Optimistically set our local assumption
+            self._optimistic_level = 100
+            # Immediately tell HA to update this entity's state in the UI
+            self.schedule_update_ha_state()
         except QSException:
+            self._optimistic_level = None
             _LOGGER.exception("Failed to turn on relay %s:", self._device_id)
 
     def turn_off(self, **kwargs) -> None:  # noqa: ANN003, ARG002
         """Turn the relay off (value=0)."""
         try:
             self._qs_client.control_device(self._device_id, 0)
+            self._optimistic_level = 0
+            self.schedule_update_ha_state()
         except QSException:
+            self._optimistic_level = None
             _LOGGER.exception("Failed to turn off relay %s:", self._device_id)
 
     def _find_status(self) -> DeviceStatus | None:
@@ -129,3 +144,22 @@ class QwikSwitchRelay(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], Switch
             if status.device_id == self._device_id:
                 return status
         return None
+
+    def _handle_coordinator_update(self) -> None:
+        """
+        Override to reconcile polled data with optimistic state.
+
+        If the new polled data for this device doesn't match our optimistic assumption,
+        we reset the assumption to None, letting the real data take over.
+        """
+        dev_status = self._find_status()
+        if (
+            dev_status is not None
+            and self._optimistic_level is not None
+            and dev_status.value != self._optimistic_level
+        ):
+            # The device reported a different value than our optimistic guess
+            self._optimistic_level = None
+
+        # Call the parent method so the entity is updated normally
+        super()._handle_coordinator_update()
