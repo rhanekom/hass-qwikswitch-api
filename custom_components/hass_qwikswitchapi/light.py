@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.components.light import LightEntity
+from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -89,6 +89,8 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
         self._device_id = device_id
         self._attr_name = name
         self._attr_unique_id = f"qwikswitch_light_{device_id}"
+        self._attr_color_mode = ColorMode.BRIGHTNESS
+        self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
 
     @property
     def is_on(self) -> bool:
@@ -118,7 +120,7 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
 
         If brightness specified, use it; else default to 255 (~100%).
         """
-        brightness: int = kwargs.get("brightness", 100)
+        brightness: int = kwargs.get("brightness", 255)
         level = int((brightness / 255) * 100)
         try:
             self._qs_client.control_device(self._device_id, level)
