@@ -2,28 +2,24 @@
 
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from qwikswitchapi.constants import DeviceClass
-from qwikswitchapi.qs_exception import QSException
+
+from custom_components.hass_qwikswitchapi.entity import QwikSwitchBaseEntity
 
 from .const import DATA_QS_CLIENT, DATA_QS_COORDINATOR, DOMAIN
-from .coordinator import QwikSwitchDataUpdateCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
-    from qwikswitchapi.entities.device_status import DeviceStatus
-    from qwikswitchapi.qs_client import QSClient
+    from qwikswitchapi.client import QSClient
 
-
-_LOGGER = logging.getLogger(__name__)
+    from .coordinator import QwikSwitchDataUpdateCoordinator
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
@@ -66,7 +62,7 @@ async def async_setup_entry(
         async_add_entities(devices)
 
 
-class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightEntity):
+class QwikSwitchLight(QwikSwitchBaseEntity, LightEntity):
     """Representation of a QwikSwitch Light (dimmer)."""
 
     def __init__(
@@ -84,17 +80,12 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
         :param device_id: ID of the device
         :param name: Friendly name
         """
-        super().__init__(coordinator)
-        self._qs_client = qs_client
-        self._device_id = device_id
-        self._attr_name = name
-        self._attr_unique_id = f"qwikswitch_light_{device_id}"
+        super().__init__(
+            coordinator, qs_client, device_id, name, entity_suffix="light_"
+        )
+
         self._attr_color_mode = ColorMode.BRIGHTNESS
         self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
-
-        # Store an "optimistic" level (0..100) after toggling.
-        # If None, we rely on the polled data from coordinator.data.
-        self._optimistic_level: int | None = None
 
     @property
     def is_on(self) -> bool:
@@ -103,8 +94,8 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
 
         :return: True if value > 0, else False
         """
-        if self._optimistic_level is not None:
-            return self._optimistic_level > 0
+        if self._optimistic_value is not None:
+            return self._optimistic_value > 0
 
         dev_status = self._find_status()
         return dev_status.value > 0 if dev_status else False
@@ -116,7 +107,7 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
 
         :return: brightness in 0..255, or None if unavailable
         """
-        level = self._optimistic_level
+        level = self._optimistic_value
 
         if level is None:
             dev_status = self._find_status()
@@ -135,51 +126,8 @@ class QwikSwitchLight(CoordinatorEntity[QwikSwitchDataUpdateCoordinator], LightE
         """
         brightness: int = kwargs.get("brightness", 255)
         level = int((brightness / 255) * 100)
-        try:
-            self._qs_client.control_device(self._device_id, level)
-            self._optimistic_level = level
-            # Immediately tell HA to update this entity's state in the UI
-            self.schedule_update_ha_state()
-        except QSException:
-            self._optimistic_level = None
-            _LOGGER.exception("Failed to turn on light %s:", self._device_id)
+        self.control_device_optimistic(level)
 
     def turn_off(self, **kwargs) -> None:  # noqa: ANN003, ARG002
         """Turn off the light (set value to 0)."""
-        try:
-            self._qs_client.control_device(self._device_id, 0)
-            self._optimistic_level = 0
-            self.schedule_update_ha_state()
-        except QSException:
-            self._optimistic_level = None
-            _LOGGER.exception("Failed to turn off light %s", self._device_id)
-
-    def _find_status(self) -> DeviceStatus | None:
-        """
-        Find this device's status in the coordinator data.
-
-        :return: The matching DeviceStatus, or None if not found
-        """
-        for status in self.coordinator.data:
-            if status.device_id == self._device_id:
-                return status
-        return None
-
-    def _handle_coordinator_update(self) -> None:
-        """
-        Override to reconcile polled data with optimistic state.
-
-        If the new polled data for this device doesn't match our optimistic assumption,
-        we reset the assumption to None, letting the real data take over.
-        """
-        dev_status = self._find_status()
-        if (
-            dev_status is not None
-            and self._optimistic_level is not None
-            and dev_status.value != self._optimistic_level
-        ):
-            # The device reported a different value than our optimistic guess
-            self._optimistic_level = None
-
-        # Call the parent method so the entity is updated normally
-        super()._handle_coordinator_update()
+        self.control_device_optimistic(0)

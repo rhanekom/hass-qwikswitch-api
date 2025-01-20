@@ -12,8 +12,8 @@ from typing import TYPE_CHECKING
 
 from homeassistant.const import CONF_EMAIL, Platform
 from homeassistant.core import HomeAssistant
-from qwikswitchapi.qs_client import QSClient
-from qwikswitchapi.qs_exception import QSException
+from qwikswitchapi.client import QSClient
+from qwikswitchapi.exceptions import QSException
 
 from .const import (
     CONF_MASTER_KEY,

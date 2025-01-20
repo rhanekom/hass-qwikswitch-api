@@ -7,11 +7,11 @@ from datetime import timedelta
 from typing import TYPE_CHECKING
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from qwikswitchapi.entities.device_statuses import DeviceStatus
+from qwikswitchapi.entities import DeviceStatus
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
-    from qwikswitchapi.qs_client import QSClient
+    from qwikswitchapi.client import QSClient
 
 _LOGGER = logging.getLogger(__name__)
 

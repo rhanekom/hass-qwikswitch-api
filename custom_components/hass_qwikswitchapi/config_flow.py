@@ -9,8 +9,8 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_EMAIL
 from homeassistant.helpers import selector
-from qwikswitchapi.qs_client import QSClient
-from qwikswitchapi.qs_exception import QSException
+from qwikswitchapi.client import QSClient
+from qwikswitchapi.exceptions import QSException
 from slugify import slugify
 
 from .const import (
@@ -23,7 +23,7 @@ from .const import (
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigFlowResult
-    from qwikswitchapi.entities.api_keys import ApiKeys
+    from qwikswitchapi.entities import ApiKeys
 
 
 class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

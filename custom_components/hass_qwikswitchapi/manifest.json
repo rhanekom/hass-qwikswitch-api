@@ -9,7 +9,7 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/rhanekom/hass-qwikswitch-api",
   "requirements": [
-    "qwikswitch_api==0.0.8"
+    "qwikswitch_api==0.0.9"
   ],
   "version": "0.1.0"
 }
