@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from qwikswitchapi.constants import DeviceClass
 
-from custom_components.hass_qwikswitchapi.const import (
+from .const import (
     DATA_QS_CLIENT,
     DATA_QS_COORDINATOR,
     DOMAIN,
 )
-from custom_components.hass_qwikswitchapi.entity import QwikSwitchBaseEntity
+from .entity import QwikSwitchBaseEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
