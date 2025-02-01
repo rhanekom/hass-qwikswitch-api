@@ -16,7 +16,7 @@ On setting up the integration you will need two pieces of information:
 * The email address you used to register on the [QwikSwitch website](https://qwikswitch.com/login/)
 * The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password ti the web interface.
 
-The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 5s, but can be changed in this configuration.
+The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 5s, but can be changed in this configuration.  If you see the devices being disabled for periods, and you being rate limited in the logs, try setting the poll frequency to a higher value.
 
 On setup this integration will call the API to find the status of all devices.  The API does not return any friendly names that you might have set up, so you will need to rename these devices from their id (@....) to more friendly names.
 

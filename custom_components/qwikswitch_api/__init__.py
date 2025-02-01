@@ -53,7 +53,9 @@ async def async_setup_entry(
 
     email: str = entry.data[CONF_EMAIL]
     master_key: str = entry.data[CONF_MASTER_KEY]
-    poll_frequency: int = entry.data.get(CONF_POLL_FREQUENCY, DEFAULT_POLL_FREQUENCY)
+    poll_frequency: int = entry.options.get(
+        CONF_POLL_FREQUENCY, entry.data.get(CONF_POLL_FREQUENCY, DEFAULT_POLL_FREQUENCY)
+    )
 
     try:
         qs_client = QSClient(email, master_key)  # No base_uri specified
