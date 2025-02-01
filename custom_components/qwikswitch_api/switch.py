@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch import SwitchEntity
 from qwikswitchapi.constants import DeviceClass
 
 from .const import (
@@ -22,14 +22,6 @@ if TYPE_CHECKING:
     from qwikswitchapi.entities import DeviceStatus
 
     from .coordinator import QwikSwitchDataUpdateCoordinator
-
-ENTITY_DESCRIPTIONS = (
-    SwitchEntityDescription(
-        key="qwikswitch_api",
-        name="Integration Switch",
-        icon="mdi:format-quote-close",
-    ),
-)
 
 
 async def async_setup_entry(

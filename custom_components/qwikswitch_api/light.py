@@ -5,13 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from homeassistant.components.light import ColorMode, LightEntity
-from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
 from qwikswitchapi.constants import DeviceClass
 
-from custom_components.hass_qwikswitchapi.entity import QwikSwitchBaseEntity
-
 from .const import DATA_QS_CLIENT, DATA_QS_COORDINATOR, DOMAIN
+from .entity import QwikSwitchBaseEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -20,14 +18,6 @@ if TYPE_CHECKING:
     from qwikswitchapi.client import QSClient
 
     from .coordinator import QwikSwitchDataUpdateCoordinator
-
-ENTITY_DESCRIPTIONS = (
-    SensorEntityDescription(
-        key="qwikswitch_api",
-        name="Integration Sensor",
-        icon="mdi:format-quote-close",
-    ),
-)
 
 
 async def async_setup_entry(
