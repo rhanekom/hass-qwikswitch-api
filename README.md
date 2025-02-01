@@ -20,6 +20,19 @@ The QwikSwitch API has a rate limit of 30 requests per minute.  By default, poll
 
 On setup this integration will call the API to find the status of all devices.  The API does not return any friendly names that you might have set up, so you will need to rename these devices from their id (@....) to more friendly names.
 
+The following devices are currently supported:
+
+* RELAY QS-D-S5 (Dimmer/Light)
+* RELAY QS-R-S5 (Relay/Switch)
+* RELAY QS-R-S30 (Relay/Switch)
+
+If you have a different device, open up an issue at the [dependent library repo](https://github.com/rhanekom/qwikswitch-api) with details on the device.
+
+## Known issues/limitations
+
+1. With the API being rate-limited and this being a polling integration, you might sometimes see behaviours such as lights toggling back off when you've just switched it on.  A couple of seconds later on the next poll the light state will be corrected.
+2. Relays will be added to Home Assistant as switches.  If you want these to be displayed as lights, you change the display type on the entity.
+
 ## Contributing
 
 See [Contributing](CONTRIBUTING.md) for details.
