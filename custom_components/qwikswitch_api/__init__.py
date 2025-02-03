@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 from homeassistant.const import CONF_EMAIL, Platform
 from homeassistant.core import HomeAssistant
 from qwikswitchapi.client import QSClient
-from qwikswitchapi.exceptions import QSException
+from qwikswitchapi.exceptions import QSError
 
 from .const import (
     CONF_MASTER_KEY,
@@ -62,7 +62,7 @@ async def async_setup_entry(
 
         # Generate keys once at startup
         await hass.async_add_executor_job(qs_client.generate_api_keys)
-    except QSException:
+    except QSError:
         _LOGGER.exception("Failed to set up QwikSwitch API integration")
         return False
 
@@ -96,7 +96,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             # Optionally delete keys if you do not want them to persist
             try:
                 await hass.async_add_executor_job(qs_client.delete_api_keys)
-            except QSException as err:
+            except QSError as err:
                 _LOGGER.warning("Could not delete QwikSwitch API keys: %s", err)
 
         hass.data[DOMAIN].pop(DATA_QS_COORDINATOR, None)

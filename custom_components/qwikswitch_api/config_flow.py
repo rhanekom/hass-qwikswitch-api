@@ -11,7 +11,7 @@ from homeassistant.const import CONF_EMAIL
 from homeassistant.core import callback
 from homeassistant.helpers import selector
 from qwikswitchapi.client import QSClient
-from qwikswitchapi.exceptions import QSException
+from qwikswitchapi.exceptions import QSError
 from slugify import slugify
 
 from .const import (
@@ -45,7 +45,7 @@ class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input[CONF_EMAIL],
                     user_input[CONF_MASTER_KEY],
                 )
-            except QSException as exception:
+            except QSError as exception:
                 LOGGER.warning(exception)
                 _errors["base"] = "auth"
             else:
