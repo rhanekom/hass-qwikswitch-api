@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from qwikswitchapi.exceptions import QSException
+from qwikswitchapi.exceptions import QSError
 
 from .coordinator import QwikSwitchDataUpdateCoordinator
 
@@ -69,7 +69,7 @@ class QwikSwitchBaseEntity(CoordinatorEntity[QwikSwitchDataUpdateCoordinator]):
             self._optimistic_value = new_value
             # Force immediate UI update
             self.schedule_update_ha_state()
-        except QSException:
+        except QSError:
             self._optimistic_value = None
             _LOGGER.exception(
                 "Failed to control device %s with value %s:", self._device_id, new_value
