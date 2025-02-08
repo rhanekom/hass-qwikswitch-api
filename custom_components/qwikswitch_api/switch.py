@@ -4,15 +4,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch import SwitchEntity
+from homeassistant.helpers.device_registry import DeviceInfo
 from qwikswitchapi.constants import DeviceClass
 
-from custom_components.hass_qwikswitchapi.const import (
+from .const import (
     DATA_QS_CLIENT,
     DATA_QS_COORDINATOR,
     DOMAIN,
+    MANUFACTURER,
+    MODEL_RELAY,
 )
-from custom_components.hass_qwikswitchapi.entity import QwikSwitchBaseEntity
+from .entity import QwikSwitchBaseEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -22,14 +25,6 @@ if TYPE_CHECKING:
     from qwikswitchapi.entities import DeviceStatus
 
     from .coordinator import QwikSwitchDataUpdateCoordinator
-
-ENTITY_DESCRIPTIONS = (
-    SwitchEntityDescription(
-        key="qwikswitch_api",
-        name="Integration Switch",
-        icon="mdi:format-quote-close",
-    ),
-)
 
 
 async def async_setup_entry(
@@ -104,6 +99,16 @@ class QwikSwitchRelay(QwikSwitchBaseEntity, SwitchEntity):
 
         dev_status = self._find_status()
         return dev_status.value > 0 if dev_status else False
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device registry information so this entity is associated with a device in Home Assistant."""  # noqa: E501
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device_id)},
+            name=self._attr_name,
+            manufacturer=MANUFACTURER,
+            model=MODEL_RELAY,
+        )
 
     def turn_on(self, **kwargs) -> None:  # noqa: ANN003, ARG002
         """Turn the relay on (value=100)."""

@@ -8,9 +8,10 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_EMAIL
+from homeassistant.core import callback
 from homeassistant.helpers import selector
 from qwikswitchapi.client import QSClient
-from qwikswitchapi.exceptions import QSException
+from qwikswitchapi.exceptions import QSError
 from slugify import slugify
 
 from .const import (
@@ -44,7 +45,7 @@ class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input[CONF_EMAIL],
                     user_input[CONF_MASTER_KEY],
                 )
-            except QSException as exception:
+            except QSError as exception:
                 LOGGER.warning(exception)
                 _errors["base"] = "auth"
             else:
@@ -81,6 +82,14 @@ class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=data_schema, errors=_errors
         )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Return the options flow handler."""
+        return QwikSwitchAPIOptionsFlowHandler(config_entry)
 
     def _test_credentials(self, email: str, master_key: str) -> ApiKeys:
         """Validate credentials."""

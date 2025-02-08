@@ -4,14 +4,20 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from homeassistant.components.light import ColorMode, LightEntity
-from homeassistant.components.sensor import SensorEntityDescription
+from homeassistant.components.light import LightEntity
+from homeassistant.components.light.const import ColorMode
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 from qwikswitchapi.constants import DeviceClass
 
-from custom_components.hass_qwikswitchapi.entity import QwikSwitchBaseEntity
-
-from .const import DATA_QS_CLIENT, DATA_QS_COORDINATOR, DOMAIN
+from .const import (
+    DATA_QS_CLIENT,
+    DATA_QS_COORDINATOR,
+    DOMAIN,
+    MANUFACTURER,
+    MODEL_DIMMER,
+)
+from .entity import QwikSwitchBaseEntity
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -20,14 +26,6 @@ if TYPE_CHECKING:
     from qwikswitchapi.client import QSClient
 
     from .coordinator import QwikSwitchDataUpdateCoordinator
-
-ENTITY_DESCRIPTIONS = (
-    SensorEntityDescription(
-        key="qwikswitch_api",
-        name="Integration Sensor",
-        icon="mdi:format-quote-close",
-    ),
-)
 
 
 async def async_setup_entry(
@@ -117,6 +115,16 @@ class QwikSwitchLight(QwikSwitchBaseEntity, LightEntity):
 
         # Convert from [0..100] to [0..255]
         return int((level / 100) * 255)
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device registry information so this entity is associated with a device in Home Assistant."""  # noqa: E501
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device_id)},
+            name=self._attr_name,
+            manufacturer=MANUFACTURER,
+            model=MODEL_DIMMER,
+        )
 
     def turn_on(self, **kwargs) -> None:  # noqa: ANN003
         """
