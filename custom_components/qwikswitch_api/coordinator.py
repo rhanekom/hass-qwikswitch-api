@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from qwikswitchapi.entities import DeviceStatus
 
+from .const import DATA_COMMAND_QUEUE, DOMAIN
+
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from qwikswitchapi.client import QSClient
@@ -35,6 +37,7 @@ class QwikSwitchDataUpdateCoordinator(DataUpdateCoordinator[list[DeviceStatus]])
         :param poll_frequency: Poll interval in seconds.
         """
         self._qs_client = qs_client
+        self._hass = hass
         update_interval = timedelta(seconds=poll_frequency)
 
         super().__init__(
@@ -51,10 +54,10 @@ class QwikSwitchDataUpdateCoordinator(DataUpdateCoordinator[list[DeviceStatus]])
         :return: A list of DeviceStatus objects.
         :raises UpdateFailed: if fetching data fails.
         """
+        command_queue = self._hass.data[DOMAIN][DATA_COMMAND_QUEUE]
+
         try:
-            device_statuses = await self.hass.async_add_executor_job(
-                self._qs_client.get_all_device_status
-            )
+            device_statuses = await command_queue.enqueue_poll()
         except Exception as err:
             message = f"Error fetching QwikSwitch data: {err}"
             raise UpdateFailed(message) from err

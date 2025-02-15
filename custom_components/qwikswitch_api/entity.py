@@ -6,13 +6,13 @@ import logging
 from typing import TYPE_CHECKING
 
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from qwikswitchapi.exceptions import QSError
 
 from .coordinator import QwikSwitchDataUpdateCoordinator
 
 if TYPE_CHECKING:
-    from qwikswitchapi.client import QSClient
     from qwikswitchapi.entities import DeviceStatus
+
+    from .command_queue import QwikSwitchCommandQueue
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class QwikSwitchBaseEntity(CoordinatorEntity[QwikSwitchDataUpdateCoordinator]):
     def __init__(
         self,
         coordinator: QwikSwitchDataUpdateCoordinator,
-        qs_client: QSClient,
+        command_queue: QwikSwitchCommandQueue,
         device_id: str,
         name: str,
         entity_suffix: str = "",
@@ -32,15 +32,15 @@ class QwikSwitchBaseEntity(CoordinatorEntity[QwikSwitchDataUpdateCoordinator]):
         Initialize the entity.
 
         :param coordinator: The QwikSwitchDataUpdateCoordinator handling updates
-        :param qs_client: QwikSwitch client for controlling devices
+        :param command_queue: The QwikSwitchCommandQueue for sending commands
         :param device_id: Unique ID of the device
         :param name: Friendly name
         :param entity_suffix: Optional suffix (e.g., "light_", "switch_") for unique_id
         """
         super().__init__(coordinator)
-        self._qs_client = qs_client
         self._device_id = device_id
         self._attr_name = name
+        self._command_queue = command_queue
 
         # A single place for your entity's unique ID
         self._attr_unique_id = f"qwikswitch_{entity_suffix}{device_id}"
@@ -62,18 +62,15 @@ class QwikSwitchBaseEntity(CoordinatorEntity[QwikSwitchDataUpdateCoordinator]):
                 return status
         return None
 
-    def control_device_optimistic(self, new_value: int) -> None:
+    def control_device_optimistic(self, level: int) -> None:
         """Send a command to the device and set an optimistic value so the UI reflects the change immediately."""  # noqa: E501
-        try:
-            self._qs_client.control_device(self._device_id, new_value)
-            self._optimistic_value = new_value
-            # Force immediate UI update
-            self.schedule_update_ha_state()
-        except QSError:
-            self._optimistic_value = None
-            _LOGGER.exception(
-                "Failed to control device %s with value %s:", self._device_id, new_value
-            )
+        self.hass.create_task(
+            self._command_queue.enqueue_set_device(self._device_id, level)
+        )
+
+        # Optimistically store this level and update the HA state
+        self._optimistic_value = level
+        self.schedule_update_ha_state()
 
     def _handle_coordinator_update(self) -> None:
         """Reconcile the polled device value with our optimistic assumption. If they differ, discard the assumption."""  # noqa: E501

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from command_queue import QwikSwitchCommandQueue
 from homeassistant.components.light import LightEntity
 from homeassistant.components.light.const import ColorMode
 from homeassistant.core import HomeAssistant
@@ -11,7 +12,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from qwikswitchapi.constants import DeviceClass
 
 from .const import (
-    DATA_QS_CLIENT,
+    DATA_COMMAND_QUEUE,
     DATA_QS_COORDINATOR,
     DOMAIN,
     MANUFACTURER,
@@ -23,8 +24,8 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
-    from qwikswitchapi.client import QSClient
 
+    from .command_queue import QwikSwitchCommandQueue
     from .coordinator import QwikSwitchDataUpdateCoordinator
 
 
@@ -43,12 +44,12 @@ async def async_setup_entry(
     coordinator: QwikSwitchDataUpdateCoordinator = hass.data[DOMAIN][
         DATA_QS_COORDINATOR
     ]
-    qs_client: QSClient = hass.data[DOMAIN][DATA_QS_CLIENT]
+    queue: QwikSwitchCommandQueue = hass.data[DOMAIN][DATA_COMMAND_QUEUE]
 
     devices: list[QwikSwitchLight] = [
         QwikSwitchLight(
             coordinator=coordinator,
-            qs_client=qs_client,
+            command_queue=queue,
             device_id=dev_status.device_id,
             name=f"QwikSwitch Dimmer {dev_status.device_id}",
         )
@@ -66,7 +67,7 @@ class QwikSwitchLight(QwikSwitchBaseEntity, LightEntity):
     def __init__(
         self,
         coordinator: QwikSwitchDataUpdateCoordinator,
-        qs_client: QSClient,
+        command_queue: QwikSwitchCommandQueue,
         device_id: str,
         name: str,
     ) -> None:
@@ -74,12 +75,12 @@ class QwikSwitchLight(QwikSwitchBaseEntity, LightEntity):
         Initialize the QwikSwitch light entity.
 
         :param coordinator: DataUpdateCoordinator for QwikSwitch
-        :param qs_client: QSClient instance
+        :param command_queue: CommandQueue for sending commands
         :param device_id: ID of the device
         :param name: Friendly name
         """
         super().__init__(
-            coordinator, qs_client, device_id, name, entity_suffix="light_"
+            coordinator, command_queue, device_id, name, entity_suffix="light_"
         )
 
         self._attr_color_mode = ColorMode.BRIGHTNESS
