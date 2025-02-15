@@ -15,8 +15,11 @@ from qwikswitchapi.exceptions import QSError
 from slugify import slugify
 
 from .const import (
+    CONF_COMMAND_DELAY,
     CONF_MASTER_KEY,
     CONF_POLL_FREQUENCY,
+    CONF_VERSION,
+    DEFAULT_COMMAND_DELAY,
     DEFAULT_POLL_FREQUENCY,
     DOMAIN,
     LOGGER,
@@ -30,7 +33,15 @@ if TYPE_CHECKING:
 class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for QwikSwitch API."""
 
-    VERSION = 1
+    VERSION = CONF_VERSION
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Return the options flow handler."""
+        return QwikSwitchAPIOptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self,
@@ -76,20 +87,15 @@ class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(
                     CONF_POLL_FREQUENCY, default=DEFAULT_POLL_FREQUENCY
                 ): vol.All(cv.positive_int, vol.Range(min=1)),
+                vol.Required(
+                    CONF_COMMAND_DELAY, default=DEFAULT_COMMAND_DELAY
+                ): vol.All(cv.positive_int, vol.Range(min=1)),
             }
         )
 
         return self.async_show_form(
             step_id="user", data_schema=data_schema, errors=_errors
         )
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
-    ) -> config_entries.OptionsFlow:
-        """Return the options flow handler."""
-        return QwikSwitchAPIOptionsFlowHandler(config_entry)
 
     def _test_credentials(self, email: str, master_key: str) -> ApiKeys:
         """Validate credentials."""
@@ -102,7 +108,7 @@ class QwikSwitchAPIOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize the QwikSwitch options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -111,14 +117,20 @@ class QwikSwitchAPIOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(data=user_input)
 
-        current_poll_freq: int = self.config_entry.data.get(
+        current_poll_freq = self._config_entry.data.get(
             CONF_POLL_FREQUENCY, DEFAULT_POLL_FREQUENCY
+        )
+        current_command_delay = self._config_entry.data.get(
+            CONF_COMMAND_DELAY, DEFAULT_COMMAND_DELAY
         )
         options_schema = vol.Schema(
             {
-                vol.Optional(CONF_POLL_FREQUENCY, default=current_poll_freq): vol.All(
+                vol.Required(CONF_POLL_FREQUENCY, default=current_poll_freq): vol.All(
                     cv.positive_int, vol.Range(min=1)
-                )
+                ),
+                vol.Required(
+                    CONF_COMMAND_DELAY, default=current_command_delay
+                ): vol.All(cv.positive_int, vol.Range(min=1)),
             }
         )
 

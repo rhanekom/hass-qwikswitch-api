@@ -14,9 +14,9 @@ Install via HACS.
 On setting up the integration you will need two pieces of information:
 
 * The email address you used to register on the [QwikSwitch website](https://qwikswitch.com/login/)
-* The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password ti the web interface.
+* The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password to the web interface.
 
-The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 5s, but can be changed in this configuration.  If you see the devices being disabled for periods, and you being rate limited in the logs, try setting the poll frequency to a higher value.
+The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 5s, but can be changed in this configuration.  If you see the devices being disabled for periods, and you being rate limited in the logs, try setting the command delay to a higher value.
 
 On setup this integration will call the API to find the status of all devices.  The API does not return any friendly names that you might have set up, so you will need to rename these devices from their id (@....) to more friendly names.
 
@@ -31,7 +31,8 @@ If you have a different device, open up an issue at the [dependent library repo]
 ## Known issues/limitations
 
 1. With the API being rate-limited and this being a polling integration, you might sometimes see behaviours such as lights toggling back off when you've just switched it on.  A couple of seconds later on the next poll the light state will be corrected.
-2. Relays will be added to Home Assistant as switches.  If you want these to be displayed as lights, you change the display type on the entity.
+2. The rate-limitation is interesting in that it seems to rate limit 1 call to every 2s, rather than spanning the count of calls over a period of 60s.  To attempt to avoid being rate limited, the integration uses a queue to space out API calls.  The default is 2s.
+3. Relays will be added to Home Assistant as switches.  If you want these to be displayed as lights, you change the display type on the entity.
 
 ## Contributing
 
