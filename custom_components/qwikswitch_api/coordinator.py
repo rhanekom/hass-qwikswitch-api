@@ -62,5 +62,4 @@ class QwikSwitchDataUpdateCoordinator(DataUpdateCoordinator[list[DeviceStatus]])
             message = f"Error fetching QwikSwitch data: {err}"
             raise UpdateFailed(message) from err
         else:
-            # get_all_device_status() returns a DeviceStatuses object; use `.statuses`
-            return device_statuses.statuses
+            return device_statuses

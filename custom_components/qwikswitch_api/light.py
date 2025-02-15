@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from command_queue import QwikSwitchCommandQueue
 from homeassistant.components.light import LightEntity
 from homeassistant.components.light.const import ColorMode
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from qwikswitchapi.constants import DeviceClass
 
+from .command_queue import QwikSwitchCommandQueue
 from .const import (
     DATA_COMMAND_QUEUE,
     DATA_QS_COORDINATOR,

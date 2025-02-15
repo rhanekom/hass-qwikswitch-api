@@ -72,18 +72,19 @@ async def async_setup_entry(
         _LOGGER.exception("Failed to set up QwikSwitch API integration")
         return False
 
-    # Create the coordinator for periodic updates
-    coordinator = QwikSwitchDataUpdateCoordinator(hass, qs_client, poll_frequency)
-    # Perform first refresh to ensure data is available
-    await coordinator.async_config_entry_first_refresh()
-
     command_queue = QwikSwitchCommandQueue(qs_client, hass, command_delay=command_delay)
     command_queue.start()
 
     # Store references
     hass.data[DOMAIN][DATA_QS_CLIENT] = qs_client
-    hass.data[DOMAIN][DATA_QS_COORDINATOR] = coordinator
     hass.data[DOMAIN][DATA_COMMAND_QUEUE] = command_queue
+
+    # Create the coordinator for periodic updates
+    coordinator = QwikSwitchDataUpdateCoordinator(hass, qs_client, poll_frequency)
+    hass.data[DOMAIN][DATA_QS_COORDINATOR] = coordinator
+
+    # Perform first refresh to ensure data is available
+    await coordinator.async_config_entry_first_refresh()
 
     # Forward setup to child platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -138,8 +139,9 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         if CONF_COMMAND_DELAY not in new_data:
             new_data[CONF_COMMAND_DELAY] = DEFAULT_COMMAND_DELAY
 
-        config_entry.version = CONF_VERSION
-        hass.config_entries.async_update_entry(config_entry, data=new_data)
+        hass.config_entries.async_update_entry(
+            config_entry, data=new_data, version=CONF_VERSION
+        )
         _LOGGER.info(
             "Migrated QwikSwitch config entry from version %s to %s",
             config_entry.version,

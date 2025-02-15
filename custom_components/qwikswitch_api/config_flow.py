@@ -108,7 +108,7 @@ class QwikSwitchAPIOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize the QwikSwitch options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -117,10 +117,10 @@ class QwikSwitchAPIOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(data=user_input)
 
-        current_poll_freq = self.config_entry.data.get(
+        current_poll_freq = self._config_entry.data.get(
             CONF_POLL_FREQUENCY, DEFAULT_POLL_FREQUENCY
         )
-        current_command_delay = self.config_entry.data.get(
+        current_command_delay = self._config_entry.data.get(
             CONF_COMMAND_DELAY, DEFAULT_COMMAND_DELAY
         )
         options_schema = vol.Schema(
