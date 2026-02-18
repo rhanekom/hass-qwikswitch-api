@@ -1,12 +1,12 @@
 # Pre-commit file adapted from https://github.com/boralyl/cookiecutter-homeassistant-component
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
-        args: [--py37-plus]
+        args: [--py313-plus]
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 26.1.0
     hooks:
       - id: black
         args:
@@ -14,7 +14,7 @@ repos:
           - --quiet
         language_version: python3.13
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         args:
@@ -22,8 +22,8 @@ repos:
           - --skip="./.*,*.csv,*.json"
           - --quiet-level=2
         exclude_types: [csv, json]
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.8.6
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
