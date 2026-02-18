@@ -2,7 +2,7 @@
 
 set -e
 
-cd "$(dirname "$0")/.."
+cd "/workspaces/hass-qwikswitch-api"
 
 # Create config dir if not present
 if [[ ! -d "${PWD}/config" ]]; then

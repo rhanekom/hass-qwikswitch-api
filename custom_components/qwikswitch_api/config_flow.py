@@ -94,7 +94,12 @@ class QwikSwitchConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=_errors
+            step_id="user",
+            data_schema=data_schema,
+            errors=_errors,
+            description_placeholders={
+                "docs_url": "https://github.com/rhanekom/hass-qwikswitch-api"
+            },
         )
 
     def _test_credentials(self, email: str, master_key: str) -> ApiKeys:

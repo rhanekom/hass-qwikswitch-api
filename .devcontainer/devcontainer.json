@@ -1,7 +1,7 @@
 {
     "name": "rhanekom/hass-qwikswitch-api",
     "image": "mcr.microsoft.com/devcontainers/python:3.13",
-    "postCreateCommand": "scripts/setup",
+    "postCreateCommand": "/workspaces/hass-qwikswitch-api/.devcontainer/scripts/setup",
     "forwardPorts": [
         8123
     ],
