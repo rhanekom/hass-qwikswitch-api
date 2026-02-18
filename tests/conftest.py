@@ -9,7 +9,7 @@ from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_EMAIL
 from homeassistant.setup import async_setup_component
 
-from custom_components.hass_qwikswitchapi.const import (
+from custom_components.qwikswitch_api.const import (
     CONF_MASTER_KEY,
     CONF_POLL_FREQUENCY,
     DOMAIN,
@@ -29,7 +29,7 @@ def mock_qsclient() -> Generator[MagicMock]:
     :yield: A MagicMock instance that represents the QSClient.
     """
     with patch(
-        "custom_components.hass_qwikswitchapi.__init__.QSClient"
+        "custom_components.qwikswitch_api.__init__.QSClient"
     ) as mock_constructor:
         instance = MagicMock()
         instance.generate_api_keys.return_value = None

@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/rhanekom/hass-qwikswitch-api",
+                "description": "If you need help with the configuration have a look here: {docs_url}",
                 "data": {
                     "username": "Username",
                     "password": "Password"
