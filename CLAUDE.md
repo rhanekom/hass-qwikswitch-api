@@ -70,6 +70,10 @@ Two GitHub Actions workflows on push/PR to main:
 - **lint.yml** — `ruff check` and `ruff format --check`
 - **validate.yml** — Home Assistant `hassfest` manifest validation and HACS validation
 
+## Git Workflow
+
+- **Always commit all changed and new files.** Never create partial commits — every commit should include the complete set of changes.
+
 ## Config Entry
 
 Version 2 with migration support from v1 (adds `command_delay`). Config data includes: email, master_key, poll_frequency, command_delay.
