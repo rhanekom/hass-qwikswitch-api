@@ -2,7 +2,7 @@
 
 set -e
 
-cd "$(dirname "$0")/.."
+cd /workspaces/hass-qwikswitch-api
 
 ruff format .
 ruff check . --fix

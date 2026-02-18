@@ -12,7 +12,7 @@ repos:
         args:
           - --safe
           - --quiet
-        language_version: python3.11
+        language_version: python3.13
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
