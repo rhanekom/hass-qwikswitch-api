@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Per-container setup: user/project-specific steps only. System-wide tooling
-# (apt packages, uv, actionlint, gitleaks, Claude Code) is baked into the image
+# (apt packages, uv, actionlint, gitleaks, gh, Claude Code) is baked into the image
 # via .devcontainer/Dockerfile. Runs on every container create, so keep it fast.
 
 set -e
@@ -14,8 +14,17 @@ uv sync
 # Install the pre-commit hooks.
 uv run pre-commit install
 
-# Shell aliases (idempotent — safe to re-run on each container create).
+# lazygit via Homebrew (brew itself is baked into the image). Put brew on PATH,
+# then install lazygit (idempotent — brew no-ops if it is already present).
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew install lazygit
+
+# Shell setup (idempotent — safe to re-run on each container create).
 for rc in "${HOME}/.bashrc" "${HOME}/.zshrc"; do
     grep -qsF 'alias cl=' "${rc}" 2>/dev/null \
         || echo 'alias cl="claude --dangerously-skip-permissions"' >>"${rc}"
+    # Written literally so brew is put on PATH at shell startup, not at setup time.
+    # shellcheck disable=SC2016
+    grep -qsF 'brew shellenv' "${rc}" 2>/dev/null \
+        || echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>"${rc}"
 done

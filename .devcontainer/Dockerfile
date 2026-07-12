@@ -1,7 +1,7 @@
 # Dev container image for hass-qwikswitch-api.
 #
 # This holds MACHINE-WIDE, slow-changing installs only: system packages and
-# standalone global binaries (uv, actionlint, gitleaks, Claude Code). Everything
+# standalone global binaries (uv, actionlint, gitleaks, gh, Claude Code). Everything
 # user/project-specific — dependency sync, pre-commit hook install, shell aliases —
 # lives in .devcontainer/scripts/setup, which re-runs on every container create.
 #
@@ -20,6 +20,19 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# GitHub CLI — installed from GitHub's official apt repository.
+RUN mkdir -p -m 755 /etc/apt/keyrings \
+    && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        -o /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends gh \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && gh --version
+
 # uv — pinned, copied from the official image (fast, no network resolution at build).
 COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /usr/local/bin/
 
@@ -37,8 +50,15 @@ RUN arch="$(dpkg --print-architecture)" \
     && actionlint --version \
     && gitleaks version
 
-# Claude Code — installed for the vscode user so it is baked into the image
-# (avoids re-downloading on every container create).
+# Tools installed for the vscode user so they are baked into the image.
 USER vscode
+
+# Homebrew (Linux) — package manager for user-scoped CLI tools; lazygit is
+# installed from it in .devcontainer/scripts/setup. Homebrew refuses to run as
+# root, so it lives under the vscode user at /home/linuxbrew/.linuxbrew.
+RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Claude Code — baked in to avoid re-downloading on every container create.
 RUN curl -fsSL https://claude.ai/install.sh | bash
+
 USER root
