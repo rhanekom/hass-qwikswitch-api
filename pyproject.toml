@@ -1,0 +1,40 @@
+# Project manifest and single source of truth for dependencies.
+#
+# Dependency layout:
+#   [project.dependencies]  -> the component's RUNTIME deps, mirrored from
+#                              custom_components/qwikswitch_api/manifest.json.
+#                              pip-audit scans ONLY this tree (uv export --no-dev).
+#   [dependency-groups.dev] -> Home Assistant + dev/test/lint tooling. Not shipped
+#                              to users and deliberately excluded from vuln scanning
+#                              (large transitive tree we don't govern).
+#
+# uv.lock is the lockfile; regenerate with `uv lock` and sync with `uv sync`.
+
+[project]
+name = "hass-qwikswitch-api"
+version = "0.0.9"
+description = "Home Assistant custom component integrating QwikSwitch devices via the QwikSwitch cloud API."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [{ name = "Riaan Hanekom", email = "riaanh@ozow.com" }]
+
+# Runtime dependencies — keep in sync with manifest.json "requirements".
+dependencies = [
+    "qwikswitch-api==0.0.11",
+]
+
+[dependency-groups]
+# Development, test and tooling dependencies (not shipped to users).
+dev = [
+    "homeassistant>=2024.12.0",
+    "pytest-homeassistant-custom-component>=0.13.203",
+    "ruff==0.15.21",
+    "mypy==1.19.1",
+    "pre-commit==4.5.1",
+]
+
+[tool.uv]
+# This is a Home Assistant custom component, not a distributable package —
+# uv manages the environment and lockfile but does not build/install this repo.
+package = false

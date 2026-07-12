@@ -2,7 +2,7 @@
 
 set -e
 
-cd /workspaces/hass-qwikswitch-api
+cd /workspaces/hass-qwikswitch-api || exit
 
-ruff format .
-ruff check . --fix
+uv run ruff format .
+uv run ruff check . --fix

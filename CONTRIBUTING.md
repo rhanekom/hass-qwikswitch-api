@@ -56,9 +56,8 @@ Home Assistant instance running and already configured with the included
 [`configuration.yaml`](./config/configuration.yaml)
 file.
 
-* `/scripts/develop` will start an instance of Home Assistant for testing purposes.
-* Running `/scripts/clean` will remove all Home Assistant create files if you'd like to start afresh.
-
+- `/scripts/develop` will start an instance of Home Assistant for testing purposes.
+- Running `/scripts/clean` will remove all Home Assistant create files if you'd like to start afresh.
 
 ## License
 

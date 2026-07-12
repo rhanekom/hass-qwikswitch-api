@@ -6,7 +6,6 @@ To use this component you will need the [Wifi Bridge](https://www.qwikswitch.co.
 
 The [QwikSwitch QSUSB integration included in Home Assistant core](https://www.home-assistant.io/integrations/qwikswitch/) requires a USB modem, but does offer local control. The Wifi Bridge does not offer local integration.
 
-
 ## Installation
 
 Install via HACS.

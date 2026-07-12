@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
+#
+# Per-container setup: user/project-specific steps only. System-wide tooling
+# (apt packages, uv, actionlint, gitleaks, Claude Code) is baked into the image
+# via .devcontainer/Dockerfile. Runs on every container create, so keep it fast.
 
 set -e
 
-sudo apt-get update && sudo apt-get dist-upgrade -y
+cd /workspaces/hass-qwikswitch-api || exit
 
-cd /workspaces/hass-qwikswitch-api
+# Install project dependencies (runtime + dev groups) into .venv from uv.lock.
+uv sync
 
-# Install project dependencies
-python3 -m pip install --requirement requirements.txt
+# Install the pre-commit hooks.
+uv run pre-commit install
 
-# Aliases
-echo 'alias cl="claude --dangerously-skip-permissions"' | tee -a ~/.bashrc ~/.zshrc
-
-# Install the pre-commit hooks
-pre-commit install
-
-# Install Claude Code
-curl -fsSL https://claude.ai/install.sh | bash
-
-#mypy --install-types
+# Shell aliases (idempotent — safe to re-run on each container create).
+for rc in "${HOME}/.bashrc" "${HOME}/.zshrc"; do
+    grep -qsF 'alias cl=' "${rc}" 2>/dev/null \
+        || echo 'alias cl="claude --dangerously-skip-permissions"' >>"${rc}"
+done
