@@ -40,6 +40,8 @@ uv run pytest tests/test_foo.py::test_bar -v  # Run a single test
 
 Tests use `pytest-homeassistant-custom-component` which provides Home Assistant's test infrastructure. See `tests/conftest.py` for fixtures (`mock_qsclient`, `setup_integration`).
 
+**All code changes must be accompanied by tests.** Home Assistant components and their dependencies can be mocked out using `pytest-homeassistant-custom-component` (see its fixtures and the helpers in `tests/conftest.py`).
+
 ## Architecture
 
 ### Data Flow
