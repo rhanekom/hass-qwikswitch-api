@@ -9,6 +9,9 @@ cd /workspaces/hass-qwikswitch-api
 # Install project dependencies
 python3 -m pip install --requirement requirements.txt
 
+# Aliases
+echo 'alias cl="claude --dangerously-skip-permissions"' | tee -a ~/.bashrc ~/.zshrc
+
 # Install the pre-commit hooks
 pre-commit install
 

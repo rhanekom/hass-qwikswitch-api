@@ -19,3 +19,8 @@ config/*
 
 # Vim Undo files
 *~
+
+.env
+
+# Claude Code local (machine-specific) settings
+.claude/settings.local.json
