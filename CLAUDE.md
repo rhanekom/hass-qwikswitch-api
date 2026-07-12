@@ -94,9 +94,10 @@ Two GitHub Actions workflows on push/PR to main:
 
 Configured in `.pre-commit-config.yaml` (run with `uv run pre-commit run --all-files`):
 file hygiene + JSON/YAML/TOML validation + private-key/AWS-credential detection, codespell,
-ruff lint + format, markdownlint, shellcheck, actionlint, gitleaks (secret scanning), and
-pip-audit (dependency vuln scan, our runtime tree only). `actionlint` and `gitleaks` use the
-`-system` hook variants and rely on the binaries baked into the Dockerfile.
+ruff lint + format, markdownlint, shellcheck, actionlint, gitleaks (secret scanning),
+pip-audit (dependency vuln scan, our runtime tree only), and pytest (the full test suite).
+`actionlint` and `gitleaks` use the `-system` hook variants and rely on the binaries baked
+into the Dockerfile.
 
 ## Working Conventions
 
