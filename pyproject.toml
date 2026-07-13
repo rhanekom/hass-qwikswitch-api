@@ -12,7 +12,7 @@
 
 [project]
 name = "hass-qwikswitch-api"
-version = "0.0.9"
+version = "0.0.11"
 description = "Home Assistant custom component integrating QwikSwitch devices via the QwikSwitch cloud API."
 readme = "README.md"
 requires-python = ">=3.14.2"
