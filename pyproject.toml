@@ -38,3 +38,18 @@ dev = [
 # This is a Home Assistant custom component, not a distributable package —
 # uv manages the environment and lockfile but does not build/install this repo.
 package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The pytest-homeassistant-custom-component fixtures (e.g. `hass`) are async;
+# "auto" mode lets test/fixture coroutines run without per-item markers.
+asyncio_mode = "auto"
+addopts = "--cov=custom_components/qwikswitch_api --cov-report=term-missing"
+
+[tool.coverage.run]
+branch = true
+source = ["custom_components/qwikswitch_api"]
+
+[tool.coverage.report]
+# TYPE_CHECKING-only imports never execute at runtime.
+exclude_also = ["if TYPE_CHECKING:"]

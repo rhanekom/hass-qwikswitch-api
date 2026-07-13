@@ -23,7 +23,11 @@ ignore = [
     "PLR2004", # Magic value used in comparison, ...
     "S311", # Standard pseudo-random generators are not suitable for cryptographic purposes
     "D104", # Don't care all that much about docs in tests
-    "D100" # Don't care all that much about docs in tests
+    "D100", # Don't care all that much about docs in tests
+    "ANN", # Type annotations are noise on test/fixture signatures
+    "SLF001", # Tests legitimately probe private members to assert internal state
+    "S105", # Fake credentials/keys in fixtures are not real secrets
+    "S106", # Fake credentials/keys in fixtures are not real secrets
 ]
 
 [lint.flake8-pytest-style]
