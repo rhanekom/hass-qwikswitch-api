@@ -12,10 +12,19 @@ updates:
         patterns:
           - "*"
 
-  - package-ecosystem: "pip"
+  # Python dependencies are managed with uv (pyproject.toml + uv.lock). The
+  # "uv" ecosystem updates both files together; the old "pip" ecosystem edited
+  # a now-removed requirements.txt and left uv.lock stale.
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
+    # Collapse dependency bumps into a single PR to reduce noise.
+    groups:
+      python:
+        patterns:
+          - "*"
     ignore:
-      # Dependabot should not update Home Assistant as that should match the homeassistant key in hacs.json
+      # Home Assistant is bumped manually to stay in sync with the homeassistant
+      # key in hacs.json (and the manifest requirements).
       - dependency-name: "homeassistant"
