@@ -14,6 +14,10 @@ uv sync
 # Install the pre-commit hooks.
 uv run pre-commit install
 
+# MCP Launchpad (mcpl) gateway for discovering/calling MCP tools. Installed as a
+# uv tool into ~/.local/bin (already on PATH). Idempotent — re-runs no-op.
+uv tool install git+https://github.com/kenneth-liao/mcp-launchpad.git
+
 # lazygit via Homebrew (brew itself is baked into the image). Put brew on PATH,
 # then install lazygit (idempotent — brew no-ops if it is already present).
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

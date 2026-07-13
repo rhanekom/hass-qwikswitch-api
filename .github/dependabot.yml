@@ -5,6 +5,12 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Actions are pinned to commit SHAs; Dependabot bumps the SHA and the
+    # trailing version/branch comment. Group them into one PR to reduce noise.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "pip"
     directory: "/"
