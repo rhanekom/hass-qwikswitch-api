@@ -83,7 +83,7 @@ Vulnerability scanning (`pip-audit` pre-commit hook) audits **only our runtime t
 
 ## Ruff Configuration
 
-All lint rules enabled (`select = ["ALL"]`) with specific exclusions. Target: Python 3.13. Max complexity: 25. Test files have relaxed rules (asserts, magic values, missing docstrings allowed). See `.ruff.toml` for details.
+All lint rules enabled (`select = ["ALL"]`) with specific exclusions. Target: Python 3.14. Max complexity: 25. Test files have relaxed rules (asserts, magic values, missing docstrings allowed). See `.ruff.toml` for details.
 
 **Prefer inline suppression over global suppression.** When a lint warning must be silenced, use a targeted inline `# noqa: <rule>` at the offending line rather than adding the rule to a global ignore/`per-file-ignores` list in `.ruff.toml`. This keeps suppressions visible and scoped to the specific case. The exception is the `tests/` and `scripts/` directories, where relaxed rules are configured globally.
 

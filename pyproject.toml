@@ -15,7 +15,7 @@ name = "hass-qwikswitch-api"
 version = "0.0.9"
 description = "Home Assistant custom component integrating QwikSwitch devices via the QwikSwitch cloud API."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14.2"
 license = { text = "MIT" }
 authors = [{ name = "Riaan Hanekom", email = "riaanh@ozow.com" }]
 
@@ -27,7 +27,7 @@ dependencies = [
 [dependency-groups]
 # Development, test and tooling dependencies (not shipped to users).
 dev = [
-    "homeassistant>=2024.12.0",
+    "homeassistant>=2026.7.2",
     "pytest-homeassistant-custom-component>=0.13.203",
     "ruff==0.15.21",
     "mypy==1.19.1",

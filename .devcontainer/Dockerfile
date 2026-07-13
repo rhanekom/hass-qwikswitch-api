@@ -8,7 +8,7 @@
 # Pin versions here and mirror them in .pre-commit-config.yaml so the hooks that
 # use the -system variants (actionlint-system, gitleaks-system) match these binaries.
 
-FROM mcr.microsoft.com/devcontainers/python:3.13
+FROM mcr.microsoft.com/devcontainers/python:3.14
 
 # System packages required by Home Assistant / its dependencies.
 RUN apt-get update \
