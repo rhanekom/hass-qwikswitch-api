@@ -21,13 +21,13 @@ authors = [{ name = "Riaan Hanekom", email = "riaanh@ozow.com" }]
 
 # Runtime dependencies — keep in sync with manifest.json "requirements".
 dependencies = [
-    "qwikswitch-api==0.0.11",
+    "qwikswitch-api==0.0.12",
 ]
 
 [dependency-groups]
 # Development, test and tooling dependencies (not shipped to users).
 dev = [
-    "homeassistant>=2026.7.2",
+    "homeassistant>=2026.3.0",
     "pytest-homeassistant-custom-component>=0.13.203",
     "ruff==0.15.21",
     "mypy==1.19.1",

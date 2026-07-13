@@ -1051,11 +1051,11 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "qwikswitch-api", specifier = "==0.0.11" }]
+requires-dist = [{ name = "qwikswitch-api", specifier = "==0.0.12" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "homeassistant", specifier = ">=2026.7.2" },
+    { name = "homeassistant", specifier = ">=2026.3.0" },
     { name = "mypy", specifier = "==1.19.1" },
     { name = "pre-commit", specifier = "==4.5.1" },
     { name = "pytest-homeassistant-custom-component", specifier = ">=0.13.203" },
@@ -2213,14 +2213,14 @@ wheels = [
 
 [[package]]
 name = "qwikswitch-api"
-version = "0.0.11"
+version = "0.0.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/be/76/7f4b461e8078b700bc0962a2b6d004a9a8d37f5d78c2e10d92c79e6a9182/qwikswitch_api-0.0.11.tar.gz", hash = "sha256:af8916fee6550fd93144560df52feff4ab1cba24a5852e331976fa8cfcb08751", size = 13870, upload-time = "2026-02-18T16:30:26.271Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/dd/05d27179157346c5cefea89de355517b39d2aaff238dd3a6d74c4989f572/qwikswitch_api-0.0.12.tar.gz", hash = "sha256:d5492e4c4ec1aa8ad97f5a8ccf358a23f4bae48e4689ee53722c8c2b253c5d07", size = 61130, upload-time = "2026-07-13T12:52:53.121Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/44/a84264776198ee35204a843fee750f94eef0875cc29941f971bf19d00446/qwikswitch_api-0.0.11-py3-none-any.whl", hash = "sha256:0699062570321ea88d764ba8625f4f95f12b98bea16626233997b91f24410706", size = 8900, upload-time = "2026-02-18T16:30:25.086Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/7d/4e9df6e56eb1d67d521a1c51e91451749b28ba0325af64a2a04bc566ac0e/qwikswitch_api-0.0.12-py3-none-any.whl", hash = "sha256:00a6bc4d480570a58ad94580739f60884b8495afe9157d6a07af32c64d0d6595", size = 8799, upload-time = "2026-07-13T12:52:51.954Z" },
 ]
 
 [[package]]
