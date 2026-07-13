@@ -1,38 +1,105 @@
-# QwikSwitch API custom component for Home Assistant
+# QwikSwitch API — Home Assistant integration
 
-A custom component for Home Assistant that uses the [QwikSwitch API](https://qwikswitch.com/doc/) to discover devices and manage state.
+[![HACS: Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/)
+[![GitHub release](https://img.shields.io/github/v/release/rhanekom/hass-qwikswitch-api)](https://github.com/rhanekom/hass-qwikswitch-api/releases)
+[![License: MIT](https://img.shields.io/github/license/rhanekom/hass-qwikswitch-api)](LICENSE)
 
-To use this component you will need the [Wifi Bridge](https://www.qwikswitch.co.za/products/wifi-bridge).  This component is an online integration, i.e. polling over the internet).
+A custom [Home Assistant](https://www.home-assistant.io/) integration that controls QwikSwitch
+devices through the cloud [QwikSwitch API](https://qwikswitch.com/doc/), using the
+[QwikSwitch Wifi Bridge](https://www.qwikswitch.co.za/products/wifi-bridge).
 
-The [QwikSwitch QSUSB integration included in Home Assistant core](https://www.home-assistant.io/integrations/qwikswitch/) requires a USB modem, but does offer local control. The Wifi Bridge does not offer local integration.
+The [QSUSB integration built into Home Assistant core](https://www.home-assistant.io/integrations/qwikswitch/)
+needs a USB modem but controls devices locally. This integration is the alternative for the
+Wifi Bridge: the Wifi Bridge offers no local control, so state is polled over the internet
+from the QwikSwitch cloud.
+
+## Features
+
+- Exposes QwikSwitch **dimmers as lights** (with brightness) and **relays as switches**.
+- **Optimistic updates** — the UI reflects your change immediately, then reconciles with the
+  next poll.
+- A **priority command queue** that spaces out API calls and debounces duplicates to stay
+  within the QwikSwitch rate limit.
+- Configurable **poll frequency** and **command delay**, changeable at any time without a
+  restart.
+
+## Requirements
+
+- A QwikSwitch [Wifi Bridge](https://www.qwikswitch.co.za/products/wifi-bridge).
+- A QwikSwitch account — your registration **email** and your bridge's **master key** (see
+  [Configuration](#configuration)).
+- Home Assistant **2026.3.0** or newer.
 
 ## Installation
 
-Install via HACS.
+### HACS (recommended)
 
-On setting up the integration you will need two pieces of information:
+This integration is distributed as a HACS **custom repository**:
 
-* The email address you used to register on the [QwikSwitch website](https://qwikswitch.com/login/)
-* The "master key", which is the device id of your Wifi Bridge registered against the email address.  This is *not* your password to the web interface.
+1. In HACS, open the three-dot menu → **Custom repositories**.
+2. Add `https://github.com/rhanekom/hass-qwikswitch-api` with category **Integration**.
+3. Search for **QwikSwitch API** in HACS, install it, and restart Home Assistant.
 
-The QwikSwitch API has a rate limit of 30 requests per minute.  By default, polling is set at 5s, but can be changed in this configuration.  If you see the devices being disabled for periods, and you being rate limited in the logs, try setting the command delay to a higher value.
+### Manual
 
-On setup this integration will call the API to find the status of all devices.  The API does not return any friendly names that you might have set up, so you will need to rename these devices from their id (@....) to more friendly names.
+Copy `custom_components/qwikswitch_api` into your Home Assistant `config/custom_components/`
+directory and restart Home Assistant.
 
-The following devices are currently supported:
+## Configuration
 
-* RELAY QS-D-S5 (Dimmer/Light)
-* RELAY QS-R-S5 (Relay/Switch)
-* RELAY QS-R-S30 (Relay/Switch)
+Add the integration from **Settings → Devices & services → Add integration → QwikSwitch API**.
+You will be asked for two things:
 
-If you have a different device, open up an issue at the [dependent library repo](https://github.com/rhanekom/qwikswitch-api) with details on the device.
+- **Email** — the address you registered on the [QwikSwitch website](https://qwikswitch.com/login/).
+- **Master key** — the device id of your Wifi Bridge, registered against that email. This is
+  **not** your web-interface password.
 
-## Known issues/limitations
+### Options
 
-1. With the API being rate-limited and this being a polling integration, you might sometimes see behaviours such as lights toggling back off when you've just switched it on.  A couple of seconds later on the next poll the light state will be corrected.
-2. The rate-limitation is interesting in that it seems to rate limit 1 call to every 2s, rather than spanning the count of calls over a period of 60s.  To attempt to avoid being rate limited, the integration uses a queue to space out API calls.  The default is 2s.
-3. Relays will be added to Home Assistant as switches.  If you want these to be displayed as lights, you change the display type on the entity.
+| Option | Default | Minimum | Description |
+| ------ | ------- | ------- | ----------- |
+| Poll frequency | 5 s | 1 s | How often device state is polled from the API. |
+| Command delay | 2 s | 1 s | Minimum spacing between API calls, used to avoid rate limiting. |
+
+You can change these later via the integration's **Configure** button; changes apply
+immediately, without a restart.
+
+> [!NOTE]
+> The QwikSwitch API is rate limited to roughly **30 requests per minute** — in practice about
+> one call every 2 s, rather than a fixed count spread across 60 s. If you see devices going
+> unavailable and rate-limit messages in the logs, increase the **command delay**.
+
+On first setup the integration polls the API for all devices. QwikSwitch's API does not return
+any friendly names you may have configured, so devices appear under their id (`@...`) — rename
+them to something friendlier in Home Assistant.
+
+## Supported devices
+
+| Model | Type in Home Assistant |
+| ----- | ---------------------- |
+| RELAY QS-D-S5 | Dimmer (light) |
+| RELAY QS-R-S5 | Relay (switch) |
+| RELAY QS-R-S30 | Relay (switch) |
+
+Using a different device? Open an issue on the
+[`qwikswitch-api` library repository](https://github.com/rhanekom/qwikswitch-api) with the
+device details.
+
+## Known limitations
+
+1. Because the API is rate limited and this is a polling integration, a light you have just
+   switched on may briefly appear to flip back off — the next poll (a few seconds later)
+   corrects the state.
+2. The API appears to rate limit to about one call every 2 s rather than spreading a call
+   count over 60 s. To compensate, the integration queues and spaces out API calls (2 s by
+   default).
+3. Relays are added as switches. To present one as a light, use Home Assistant's built-in
+   **Switch as X** helper to represent the switch as a light.
 
 ## Contributing
 
-See [Contributing](CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## License
+
+Released under the [MIT License](LICENSE).
