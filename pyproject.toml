@@ -30,8 +30,8 @@ dev = [
     "homeassistant>=2026.3.0",
     "pytest-homeassistant-custom-component>=0.13.203",
     "ruff==0.15.21",
-    "mypy==1.19.1",
-    "pre-commit==4.5.1",
+    "mypy==2.3.0",
+    "pre-commit==4.6.0",
 ]
 
 [tool.uv]
