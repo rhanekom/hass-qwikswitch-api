@@ -29,9 +29,9 @@ dependencies = [
 dev = [
     "homeassistant>=2026.3.0",
     "pytest-homeassistant-custom-component>=0.13.203",
-    "ruff==0.15.21",
+    "ruff==0.16.1",
     "mypy==2.3.0",
-    "pre-commit==4.6.0",
+    "pre-commit==4.6.1",
 ]
 
 [tool.uv]
